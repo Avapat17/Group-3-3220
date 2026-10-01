@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "name": "Cardiology"
+    },
+    {
+        "id": 2,
+        "name": "Dermatology"
+    },
+    {
+        "id": 3,
+        "name": "Neurology"
+    },
+    {
+        "id": 4,
+        "name": "Pediatrics"
+    },
+    {
+        "id": 5,
+        "name": "Oncology"
+    },
+    {
+        "id": 6,
+        "name": "Psychiatry"
+    },
+    {
+        "id": 7,
+        "name": "Orthopedics"
+    },
+    {
+        "id": 8,
+        "name": "Gastroenterology"
+    },
+    {
+        "id": 9,
+        "name": "Endocrinology"
+    },
+    {
+        "id": 10,
+        "name": "Ophthalmology"
+    }
+]
