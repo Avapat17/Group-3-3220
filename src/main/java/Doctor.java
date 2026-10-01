@@ -11,6 +11,8 @@ public class Doctor {
     private String lastName;
     private List<Integer> specialtyIds = new ArrayList<>();
 
+    public Doctor() {}
+
     public Doctor(int id, String firstName, String lastName, List<Integer> specialtyIds) {
         this.id = id;
         this.firstName = firstName;
