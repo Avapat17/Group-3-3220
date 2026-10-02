@@ -1,0 +1,41 @@
+AI usage:
+Deep Seek was used to point in me in the direction as to how i was supposed to code our button fields the javafx front end on top of our Main.java file
+
+code in question:
+
+in the "handleAdd" function
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try(Connection conn = DatabaseManager.getConnection()){
+                    Main.addPatient(conn,name,address,email,phone,doctor);
+                }
+                return null;
+            }
+        };
+
+explination :
+
+a)javafx.concurrent.Task is a class used to run time consuming operations in a background thread to keep the Ui from freezing
+when we update,add or search a patient
+
+b)Task<void> produces no value when it finishes, we dont need it to return a value because it's job is to connect to the add,search or update
+method from the main class which are then saved in the database
+
+c)new thread<void> is used to override "protected Void call()" because abtract methods like "call" provide no implementation in a base class
+(it has no node, parent or control parent class to inherent or reuse)
+
+d)call() itself is task equivalent to run() that can throw return values and checked exceptions.
+
+e)try(Connect conn = DriverManager.getConnection()) is used to retrieve resources from the intended main file be it add,update or search
+DriverManager calls the JDBC connection (Database manager exists in file but main needs some reconfiguring to make it work as it should)
+
+f) Main.addPatient(...) is our method we connect to for our button
+
+
+
+EXTRA NOTE:
+
+the Scope of the Gui in this deliverable was to ensure it could be implemented properly on top of the main file prioritizing the primary skeleton
+along with making sure the connection calls are reaching the proper methods in order to plan for poper database implementation in the coming weeks
