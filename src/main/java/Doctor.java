@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 
+//creating doctor profile with each individual doctor and specialty IDs
 public class Doctor {
     
     private int id;
@@ -12,7 +13,7 @@ public class Doctor {
     private List<Integer> specialtyIds = new ArrayList<>();
 
     public Doctor() {}
-
+//creates a doctor profile with firstname, lastname, id and specialtyID
     public Doctor(int id, String firstName, String lastName, List<Integer> specialtyIds) {
         this.id = id;
         this.firstName = firstName;
@@ -38,10 +39,12 @@ public class Doctor {
         if (value == null || value.isNull()) {
             return;
         }
+//if multiple specialty ID are provided this adds each one
         if (value.isArray()) {
             value.forEach(id -> specialtyIds.add(id.intValue()));
         } else {
             specialtyIds.add(value.intValue());
+// adds specialtyID is only one is provided
         }
     }
 
