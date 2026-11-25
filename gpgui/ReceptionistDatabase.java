@@ -64,23 +64,90 @@ public class ReceptionistDatabase {
         }
     }
 
-    public void addPatient(int patientId, String name, String phone,
-                           String email, String address) {
+    public int addPatient(String name, String phone,
+                          String email, String address,
+                          String doctorName) {
 
-        String sql = "INSERT INTO patient (id, name, phone, email, address) VALUES (?, ?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO patient (name, phone, email, address, doctor_name)
+            VALUES (?, ?, ?, ?, ?)
+            """;
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, name);
+            statement.setString(2, phone);
+            statement.setString(3, email);
+            statement.setString(4, address);
+            statement.setString(5, doctorName);
+            statement.executeUpdate();
+
+        //allow SQL to assign the patientID, then retrieve it
+            try (Statement idStatement = connection.createStatement();
+                 ResultSet result = idStatement.executeQuery(
+                    "SELECT last_insert_rowid()")) {
+                if (!result.next()) {
+                    throw new SQLException("Failed to retrieve patient ID.");
+                }
+                return result.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not add patient.", e);
+        }
+    }
+
+    public void modifyPatient(int patientId, String name, String phone,
+                              String email, String address,
+                              String doctorName) {
+
+        String sql = """
+            UPDATE patient
+            SET name = ?, phone = ?, email = ?, address = ?, doctor_name = ?
+            WHERE id = ?
+            """;
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, name);
+            statement.setString(2, phone);
+            statement.setString(3, email);
+            statement.setString(4, address);
+            statement.setString(5, doctorName);
+            statement.setInt(6, patientId);
+
+            if (statement.executeUpdate() == 0) {
+                throw new IllegalStateException(
+                    "Patient not found.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not update patient.", e);
+        }
+    }
+
+    public void findPatient(int patientId) {
+
+        String sql = "SELECT * FROM patient WHERE id = ?";
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, patientId);
-            statement.setString(2, name);
-            statement.setString(3, phone);
-            statement.setString(4, email);
-            statement.setString(5, address);
-            statement.executeUpdate();
+
+            try (ResultSet results = statement.executeQuery()) {
+                if (results.next()) {
+                    System.out.println("Patient found: " + results.getString("name")
+                        + ", Doctor: " + results.getString("doctor_name"));
+                } else {
+                    throw new IllegalStateException("Patient not found.");
+                }
+            }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Could not add patient.", e);
+            throw new RuntimeException("Could not search patient.", e);
         }
     }
 

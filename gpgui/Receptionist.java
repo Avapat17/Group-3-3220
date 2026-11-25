@@ -16,9 +16,21 @@ public class Receptionist {
         this.database = database;
     }
 
-    public void registerPatient(int patientId, String name,
-                                String phone, String email,
-                                String address) {
+    public int registerPatient(String name, String phone,
+                               String email, String address,
+                               String doctorName) {
+
+        if (name == null || name.isBlank() || phone == null || phone.isBlank()) {
+            throw new IllegalArgumentException(
+                "Invalid patient information.");
+        }
+
+        return database.addPatient(name, phone, email, address, doctorName);
+    }
+
+    public void updatePatient(int patientId, String name,
+                              String phone, String email,
+                              String address, String doctorName) {
 
         if (patientId <= 0 || name == null || name.isBlank()
                 || phone == null || phone.isBlank()) {
@@ -26,7 +38,19 @@ public class Receptionist {
                 "Invalid patient information.");
         }
 
-        database.addPatient(patientId, name, phone, email, address);
+        database.modifyPatient(patientId, name, phone, email, address,
+                               doctorName);
+    }
+
+    public void searchPatient(int patientId) {
+
+        if (patientId <= 0) {
+            throw new IllegalArgumentException(
+                "Invalid patient ID.");
+        }
+
+        database.findPatient(patientId);
+        //NEED TO DISPLAY SOMETHING IN GUI
     }
 
     public void registerDoctor(int doctorId, String firstName,

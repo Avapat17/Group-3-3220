@@ -61,15 +61,16 @@ public class Gui extends Application {
         }
 
         //calls Reciptionist.addPatient inside a task
-        Task<Integer> task = new Task<Void>() {
+        Task<Integer> task = new Task<Integer>() {
             @Override protected Integer call(){
-                return receptionist.addPatient(patientId, name, phone, email, address, doctor);
+                return receptionist.registerPatient(
+                    name, phone, email, address, doctor);
             }
         };
 
         //Patients are successfully added , we clear the boxes for the next one
         task.setOnSucceeded(e ->{
-            requiredLabel.setText("Patient added.");
+            requiredLabel.setText("Patient added. ID: " + task.getValue());
             Patient_name.clear();
             Patient_phone.clear();
             Patient_email.clear();
@@ -98,18 +99,28 @@ public class Gui extends Application {
 
         }
 
-        //get string from input and convert to int
-        int number_ID = Integer.parseInt(ID);
+        //validate ID is a number
+        int number_ID;
+        try {
+            number_ID = Integer.parseInt(ID);
+        } catch (NumberFormatException e) {
+            requiredLabel.setText("ID must be a number.");
+            return;
+        }
 
         //calls Receptionist.searchPatient inside a task
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                //call search patient
-
+                receptionist.searchPatient(number_ID);
+                return null;
+            }
         };
 
-
+        task.setOnSucceeded(e ->{
+            requiredLabel.setText("Patient found.");
+            Patient_ID.clear();
+        });
 
         task.setOnFailed(e->{
             requiredLabel.setText("Error" + task.getException().getMessage());
@@ -126,7 +137,6 @@ public class Gui extends Application {
         //returns user input as a string with whitespaces removed
         String name = Patient_name.getText().trim();
         String ID = Patient_ID.getText().trim();
-        int number_ID = Integer.parseInt(ID);
         String phone = Patient_phone.getText().trim();
         String email = Patient_email.getText().trim();
         String address = Patient_address.getText().trim();
@@ -135,7 +145,16 @@ public class Gui extends Application {
 
         //identify patient by ID, then we can update information
         if(ID.isEmpty()) {
-            requiredLabel.setText(" ID is required");
+            requiredLabel.setText("ID is required");
+            return;
+        }
+
+        //validate ID is a number
+        int number_ID;
+        try {
+            number_ID = Integer.parseInt(ID);
+        } catch (NumberFormatException e) {
+            requiredLabel.setText("ID must be a number.");
             return;
         }
 
@@ -143,7 +162,9 @@ public class Gui extends Application {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                //call update patient
+                receptionist.updatePatient(number_ID, name, phone, email, address, doctor);
+                return null;
+            }
         };
 
         //Patients are successfully added , we clear the boxes for the next one
